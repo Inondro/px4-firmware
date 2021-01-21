@@ -1,20 +1,16 @@
-message(FATAL_ERROR "*** ATLFLIGHT ***")
 
 # Excelsior is the code name of a board currently in development.
 #
 # This cmake config builds for QURT which is the operating system running on
 # the DSP side.
 
-# Get $QC_SOC_TARGET from environment if existing.
-if (DEFINED ENV{QC_SOC_TARGET})
-	set(QC_SOC_TARGET $ENV{QC_SOC_TARGET})
-else()
-	set(QC_SOC_TARGET "APQ8074")
-endif()
+message(STATUS "*** Entering qurt.cmake ***")
+
+set(QC_SOC_TARGET "QRB5165")
 
 include(px4_git)
-px4_add_git_submodule(TARGET git_cmake_hexagon PATH "${PX4_SOURCE_DIR}/boards/atlflight/cmake_hexagon")
-list(APPEND CMAKE_MODULE_PATH "${PX4_SOURCE_DIR}/boards/atlflight/cmake_hexagon")
+# px4_add_git_submodule(TARGET git_cmake_hexagon PATH "${PX4_SOURCE_DIR}/boards/modalai/cmake_hexagon")
+list(APPEND CMAKE_MODULE_PATH "${PX4_SOURCE_DIR}/boards/modalai/cmake_hexagon")
 
 if ("$ENV{HEXAGON_SDK_ROOT}" STREQUAL "")
 	message(FATAL_ERROR "Enviroment variable HEXAGON_SDK_ROOT must be set")
@@ -23,8 +19,13 @@ else()
 endif()
 
 include(toolchain/Toolchain-qurt)
+message(STATUS "in qurt.make before qurt_flags.cmake")
 include(qurt_flags)
+message(STATUS "in qurt.make after qurt_flags.cmake")
+message(STATUS "in qurt.make: CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
+
 include_directories(${HEXAGON_SDK_INCLUDES})
+
 
 set(CONFIG_SHMEM "1")
 add_definitions(-DORB_COMMUNICATOR)
@@ -41,7 +42,7 @@ add_definitions(-D__PX4_QURT_EXCELSIOR)
 
 px4_add_board(
 	PLATFORM qurt
-	VENDOR atlflight
+	VENDOR modalai
 	MODEL excelsior
 	LABEL qurt
 	DRIVERS
@@ -84,3 +85,5 @@ px4_add_board(
 		ver
 		work_queue
 	)
+
+message(STATUS "*** Exiting qurt.cmake ***")

@@ -46,7 +46,11 @@
 #include <semaphore.h>
 #include <string.h>
 #include <fcntl.h>
+#ifndef DSP_TYPE_SLPI
 #include <poll.h>
+#else
+// Add DSPAL replacement?
+#endif
 #include <errno.h>
 #include <stdio.h>
 #include <math.h>

@@ -1,3 +1,4 @@
+message(STATUS "Entering DSPAL CMakeLists.txt")
 
 px4_add_git_submodule(TARGET git_dspal PATH "${PX4_SOURCE_DIR}/platforms/qurt/dspal")
 

@@ -1,6 +1,6 @@
 /****************************************************************************
  *
- *   Copyright (C) 2012 PX4 Development Team. All rights reserved.
+ *   Copyright (c) 2017 PX4 Development Team. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -32,61 +32,33 @@
  ****************************************************************************/
 
 /**
- * @file blocks.h
+ * @file board_config.h
  *
- * Controller library code
+ * EXCELSIOR internal definitions
  */
 
 #pragma once
 
-#include <px4_platform_common/defines.h>
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
-#include <math.h>
-#include <mathlib/math/test/test.hpp>
-#include <mathlib/math/filter/LowPassFilter2p.hpp>
+#define BOARD_OVERRIDE_UUID "EAGLEID000000000" // must be of length 16
+#define PX4_SOC_ARCH_ID     PX4_SOC_ARCH_ID_EAGLE
 
-#include "block/Block.hpp"
-#include "block/BlockParam.hpp"
+#define BOARD_HAS_NO_RESET
+#define BOARD_HAS_NO_BOOTLOADER
 
-#include "matrix/math.hpp"
-
-namespace control
-{
-
-/**
- * A uniform random number generator
+/*
+ * I2C busses
  */
-class __EXPORT BlockRandUniform: public Block
-{
-public:
-// methods
-	BlockRandUniform(SuperBlock *parent,
-			 const char *name) :
-		Block(parent, name),
-		_min(this, "MIN"),
-		_max(this, "MAX")
-	{
-		// seed should be initialized somewhere
-		// in main program for all calls to rand
-		// XXX currently in nuttx if you seed to 0, rand breaks
-	}
-	virtual ~BlockRandUniform() = default;
-	float update()
-	{
-		static float rand_max = (float) RAND_MAX;
-		float rand_val = rand();
-		float bounds = getMax() - getMin();
-		return getMin() + (rand_val * bounds) / rand_max;
-	}
-// accessors
-	float getMin() { return _min.get(); }
-	float getMax() { return _max.get(); }
-private:
-// attributes
-	control::BlockParamFloat _min;
-	control::BlockParamFloat _max;
-};
+#define PX4_I2C_BUS_EXPANSION1  2  // I2C2: J9 / GPS
+#define PX4_I2C_BUS_EXPANSION   3  // I2C3: J14 / Power
+#define PX4_I2C_BUS_EXPANSION2  9  // I2C9: J15 / Radio Receiver / Sensors
 
-} // namespace control
+#define PX4_NUMBER_I2C_BUSES    3
+
+#define PX4_I2C_OBDEV_BMP280  0x76
+
+// SPI
+#define PX4_SPI_BUS_SENSORS	1
+#define PX4_SPIDEV_MPU		PX4_MK_SPI_SEL(PX4_SPI_BUS_SENSORS, 1)
+
+#include <system_config.h>
+#include <px4_platform_common/board_common.h>
