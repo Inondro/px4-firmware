@@ -9,5 +9,4 @@
 // }
 
 void eric_debug() {
-
 }

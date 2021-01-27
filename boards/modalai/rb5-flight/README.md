@@ -14,15 +14,16 @@ https://releases.linaro.org/components/toolchain/binaries/5.1-2015.08/aarch64-li
 
 ## Other
 
-The first Qurt compile will fail. Update qurt_flags.cmake and save it. Then
-cmake will be rerun and we'll get the correct flags and the compilation will succeed.
-```bash
-$ touch boards/modalai/cmake_hexagon/qurt_flags.cmake
-```
-
 The clean command seems to wipe out both apps and qurt builds
 The clean command runs cmake then deletes all the cmake files???
 
 Why does dspal have the cmake_hexagon directory and the boards/* ???
 
 qurt_flags.cmake is used twice. In qurt.cmake and in platforms/qurt/CMakeLists.txt.
+
+## Running
+
+```bash
+export DSP_LIBRARY_PATH="/usr/lib/rfsa/adsp;/usr/lib/rfsa/dsp/sdk"
+px4 -s /etc/modalai/mainapp.config
+```

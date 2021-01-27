@@ -44,4 +44,4 @@
 	branch = px4_firmware_nuttx-8.2
 [submodule "platforms/qurt/dspal"]
 	path = platforms/qurt/dspal
-	url = https://github.com/ATLFlight/dspal.git
+	url = https://github.com/modalai/dspal.git

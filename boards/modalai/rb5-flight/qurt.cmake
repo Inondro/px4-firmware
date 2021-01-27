@@ -26,7 +26,6 @@ message(STATUS "in qurt.make: CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
 
 include_directories(${HEXAGON_SDK_INCLUDES})
 
-
 set(CONFIG_SHMEM "1")
 add_definitions(-DORB_COMMUNICATOR)
 
@@ -46,15 +45,15 @@ px4_add_board(
 	MODEL excelsior
 	LABEL qurt
 	DRIVERS
-		barometer/bmp280
-		gps
-		imu/mpu9250
-		magnetometer/hmc5883
+		# barometer/bmp280
+		# gps
+		# imu/mpu9250
+		# magnetometer/hmc5883
 		qshell/qurt
-		snapdragon_pwm_out
-		spektrum_rc
+		# snapdragon_pwm_out
+		# spektrum_rc
 	MODULES
-		airspeed_selector
+		# airspeed_selector
 		attitude_estimator_q
 		commander
 		ekf2
@@ -67,21 +66,21 @@ px4_add_board(
 		mc_pos_control
 		mc_rate_control
 		muorb/adsp
-		rc_update
+		# rc_update
 		rover_pos_control
 		sensors
-		temperature_compensation
+		# temperature_compensation
 		vmount
-		vtol_att_control
+		# vtol_att_control
 	SYSTEMCMDS
-		led_control
+		# led_control
 		mixer
-		#motor_ramp
-		motor_test
+		# motor_ramp
+		# motor_test
 		param
 		perf
-		#pwm
-		#topic_listener
+		# pwm
+		# topic_listener
 		ver
 		work_queue
 	)
