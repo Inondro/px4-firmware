@@ -14,10 +14,13 @@ https://releases.linaro.org/components/toolchain/binaries/5.1-2015.08/aarch64-li
 
 ## Other
 
-The clean command seems to wipe out both apps and qurt builds
+The clean command wipes out both apps and qurt builds
+- Use make clean instead of make <target> clean
+
 The clean command runs cmake then deletes all the cmake files???
 
 Why does dspal have the cmake_hexagon directory and the boards/* ???
+- Need to switch to a single cmake_hexagon directory
 
 qurt_flags.cmake is used twice. In qurt.cmake and in platforms/qurt/CMakeLists.txt.
 

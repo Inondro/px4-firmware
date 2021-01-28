@@ -2,7 +2,8 @@ message(STATUS "Entering DSPAL CMakeLists.txt")
 
 # px4_add_git_submodule(TARGET git_dspal PATH "${PX4_SOURCE_DIR}/platforms/qurt/dspal")
 
-list(APPEND CMAKE_MODULE_PATH "${PX4_SOURCE_DIR}/platforms/qurt/dspal/cmake_hexagon")
+# list(APPEND CMAKE_MODULE_PATH "${PX4_SOURCE_DIR}/platforms/qurt/dspal/cmake_hexagon")
+list(APPEND CMAKE_MODULE_PATH "${PX4_SOURCE_DIR}/boards/modalai/cmake_hexagon")
 include(toolchain/Toolchain-qurt)
 include(fastrpc)
 include(qurt_lib)
