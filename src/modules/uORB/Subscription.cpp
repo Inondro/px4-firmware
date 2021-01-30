@@ -55,14 +55,6 @@ Subscription::subscribe()
 		return true;
 	}
 
-#ifdef ORB_COMMUNICATOR
-    // TODO: Why is this necessary for remote topics?
-    if (orb_subscribe(_meta) < 0) {
-        PX4_ERR("Couldn't subscribe to %s\n", _meta->o_name);
-        return false;
-    }
-#endif
-
 	DeviceMaster *device_master = uORB::Manager::get_instance()->get_device_master();
 
 	if (device_master != nullptr) {
@@ -85,6 +77,15 @@ Subscription::subscribe()
 
 			return true;
 		}
+#ifdef ORB_COMMUNICATOR
+        else {
+            // TODO: Why is this necessary for remote topics?
+            if (orb_subscribe_multi(_meta, _instance) < 0) {
+                PX4_ERR("Couldn't subscribe to %s\n", _meta->o_name);
+                return false;
+            }
+        }
+#endif
 	}
 
 	return false;
