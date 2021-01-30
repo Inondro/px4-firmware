@@ -26,7 +26,15 @@ qurt_flags.cmake is used twice. In qurt.cmake and in platforms/qurt/CMakeLists.t
 
 ## Running
 
-```bash
+To allow parameter setting:
+mkdir -p /usr/share/data/adsp
+
+For the data manager (This location can be set with the f flag):
+mkdir -p /home/linaro
+
+This is only needed if all of the dsp files are not in "/usr/lib/rfsa/adsp":
 export DSP_LIBRARY_PATH="/usr/lib/rfsa/adsp;/usr/lib/rfsa/dsp/sdk"
+
+```bash
 px4 -s /etc/modalai/mainapp.config
 ```
