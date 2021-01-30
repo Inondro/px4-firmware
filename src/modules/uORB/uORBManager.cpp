@@ -380,7 +380,6 @@ int uORB::Manager::node_open(const struct orb_metadata *meta, bool advertiser, i
 
 	/* we may need to advertise the node... */
 	if (fd < 0) {
-
 		/* try to create the node */
 		ret = node_advertise(meta, advertiser, instance, priority);
 
@@ -441,6 +440,32 @@ int16_t uORB::Manager::process_remote_topic(const char *topic_name, bool isAdver
 
 	if (isAdvertisement) {
 		_remote_topics.insert(topic_name);
+
+        // TODO: Why is this necessary for remote topics?
+    	char nodepath[orb_maxpath];
+    	int ret = uORB::Utils::node_mkpath(nodepath, topic_name);
+        if (ret != OK) {
+            PX4_ERR("node_mkpath failed\n");
+            rc = -1;
+        } else {
+        	DeviceMaster *device_master = get_device_master();
+
+        	if (device_master) {
+        		uORB::DeviceNode *node = device_master->getDeviceNode(nodepath);
+
+        		if (node == nullptr) {
+        			PX4_INFO("DeviceNode(%s) not created yet", topic_name);
+        		} else {
+        			// Consider node to be advertised now.
+        			PX4_INFO("Marking node for %s as advertised\n", topic_name);
+        			node->mark_as_advertised();
+        		}
+
+        	} else {
+                PX4_ERR("get_device_master failed\n");
+        		rc = -1;
+        	}
+        }
 
 	} else {
 		_remote_topics.erase(topic_name);
