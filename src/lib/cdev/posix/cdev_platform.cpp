@@ -351,7 +351,7 @@ extern "C" {
 
 #endif
 
-		PX4_DEBUG("Called px4_poll timeout = %d", timeout);
+		// PX4_INFO("Called px4_poll timeout = %d", timeout);
 
 		px4_sem_init(&sem, 0, 0);
 

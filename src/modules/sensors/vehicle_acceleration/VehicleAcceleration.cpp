@@ -205,7 +205,12 @@ void VehicleAcceleration::ParametersUpdate(bool force)
 void VehicleAcceleration::Run()
 {
 	// backup schedule
-	ScheduleDelayed(10_ms);
+	// ScheduleDelayed(10_ms);
+    static uint32_t msg_counter = 0;
+    if (msg_counter++ == 250) {
+        PX4_INFO("VehicleAcceleration::Run");
+         msg_counter = 0;
+    }
 
 	// update corrections first to set _selected_sensor
 	bool selection_updated = SensorSelectionUpdate();

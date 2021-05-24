@@ -570,6 +570,13 @@ void Sensors::Run()
 		return;
 	}
 
+    static uint32_t msg_counter = 0;
+    if (msg_counter++ == 250) {
+        PX4_INFO("Sensors::Run");
+         msg_counter = 0;
+    }
+    return;
+
 	// run once
 	if (_last_config_update == 0) {
 		InitializeVehicleAirData();
@@ -583,7 +590,7 @@ void Sensors::Run()
 	perf_begin(_loop_perf);
 
 	// backup schedule as a watchdog timeout
-	ScheduleDelayed(10_ms);
+	// ScheduleDelayed(10_ms);
 
 	// check vehicle status for changes to publication state
 	if (_vcontrol_mode_sub.updated()) {

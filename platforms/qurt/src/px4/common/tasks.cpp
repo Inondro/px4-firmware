@@ -285,7 +285,7 @@ int px4_task_kill(px4_task_t id, int sig)
 {
 	int rv = 0;
 	pthread_t pid;
-	PX4_DEBUG("Called px4_task_kill %d, taskname %s", sig, taskmap[id].name.c_str());
+	PX4_INFO("Called px4_task_kill %d, taskname %s", sig, taskmap[id].name.c_str());
 
 	if (id < PX4_MAX_TASKS && taskmap[id].pid != 0) {
 		pid = taskmap[id].pid;
@@ -370,6 +370,7 @@ int px4_sem_timedwait(px4_sem_t *sem, const struct timespec *ts)
 	hrt_abstime timeout_us = ts_to_abstime((struct timespec *)ts) - ts_to_abstime(&ts_now);
 
 	// Create a timer to unblock.
+    // PX4_INFO("px4_sem_timedwait timeout: %llu now: %llu", timeout_us, ts_to_abstime(&ts_now));
 	hrt_work_queue(&_hpwork, (worker_t)&timer_cb, (void *)sem, timeout_us);
 	sem_wait(sem);
 	hrt_work_cancel(&_hpwork);

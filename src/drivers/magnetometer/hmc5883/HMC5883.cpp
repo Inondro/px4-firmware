@@ -197,6 +197,7 @@ HMC5883::start()
 
 	/* schedule a cycle to start things */
 	ScheduleNow();
+    // ScheduleOnInterval(HMC5883_CONVERSION_INTERVAL);
 }
 
 int
@@ -206,9 +207,25 @@ HMC5883::reset()
 	return set_range(_range_ga + 0.5f);
 }
 
+static hrt_abstime run_timestamp = 0;
+static uint32_t successful_runs = 0;
+
 void
 HMC5883::RunImpl()
 {
+    hrt_abstime start_timestamp = hrt_absolute_time();
+    if (run_timestamp) {
+        uint32_t elapsed_ms = (start_timestamp - run_timestamp) / 1000;
+        if (elapsed_ms > 100) {
+            PX4_ERR("Greater than 100ms: %llu %llu %u %u", start_timestamp, run_timestamp, elapsed_ms, successful_runs);
+            successful_runs = 0;
+        } else {
+            successful_runs++;
+            // if ((successful_runs % 150) == 0) PX4_INFO("HMC5883 %u", successful_runs);
+        }
+    }
+    run_timestamp = start_timestamp;
+
 	if (_measure_interval == 0) {
 		return;
 	}
@@ -218,7 +235,7 @@ HMC5883::RunImpl()
 
 		/* perform collection */
 		if (OK != collect()) {
-			PX4_DEBUG("collection error");
+			PX4_ERR("collection error");
 			/* restart the measurement state machine */
 			start();
 			return;
@@ -231,7 +248,6 @@ HMC5883::RunImpl()
 		 * Is there a collect->measure gap?
 		 */
 		if (_measure_interval > HMC5883_CONVERSION_INTERVAL) {
-
 			/* schedule a fresh cycle call when we are ready to measure again */
 			ScheduleDelayed(_measure_interval - HMC5883_CONVERSION_INTERVAL);
 
@@ -241,7 +257,7 @@ HMC5883::RunImpl()
 
 	/* measurement phase */
 	if (OK != measure()) {
-		PX4_DEBUG("measure error");
+		PX4_ERR("measure error");
 	}
 
 	/* next phase is collection */
@@ -250,6 +266,7 @@ HMC5883::RunImpl()
 	if (_measure_interval > 0) {
 		/* schedule a fresh cycle call when the measurement is done */
 		ScheduleDelayed(HMC5883_CONVERSION_INTERVAL);
+		//ScheduleDelayed(250000);
 	}
 }
 
@@ -302,7 +319,7 @@ int HMC5883::collect()
 
 	if (ret != OK) {
 		perf_count(_comms_errors);
-		PX4_DEBUG("data/status read error");
+		PX4_ERR("Magnetometer data/status read error");
 		goto out;
 	}
 

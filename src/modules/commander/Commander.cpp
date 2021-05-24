@@ -1834,7 +1834,6 @@ Commander::run()
 
 		// Auto disarm when landed or kill switch engaged
 		if (_armed.armed) {
-
 			// Check for auto-disarm on landing or pre-flight
 			if (_param_com_disarm_land.get() > 0 || _param_com_disarm_preflight.get() > 0) {
 
@@ -1843,11 +1842,14 @@ Commander::run()
 					_auto_disarm_landed.set_state_and_update(_land_detector.landed, hrt_absolute_time());
 
 				} else if (_param_com_disarm_preflight.get() > 0 && !_have_taken_off_since_arming) {
+                    PX4_INFO("_param_com_disarm_preflight.get");
 					_auto_disarm_landed.set_hysteresis_time_from(false, _param_com_disarm_preflight.get() * 1_s);
 					_auto_disarm_landed.set_state_and_update(true, hrt_absolute_time());
 				}
 
 				if (_auto_disarm_landed.get_state()) {
+                    PX4_INFO("_auto_disarm_landed.get_state");
+
 					arm_disarm(false, true,
 						   (_have_taken_off_since_arming ? arm_disarm_reason_t::AUTO_DISARM_LAND : arm_disarm_reason_t::AUTO_DISARM_PREFLIGHT));
 				}

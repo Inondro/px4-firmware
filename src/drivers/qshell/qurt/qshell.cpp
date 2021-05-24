@@ -103,9 +103,18 @@ int QShell::main()
 	fds[0].fd = sub_qshell_req;
 	fds[0].events = POLLIN;
 
+    // int number_of_cmd = 1;
+
 	while (!appState.exitRequested()) {
 
-		int pret = px4_poll(&fds[0], (sizeof(fds) / sizeof(fds[0])), 1000);
+        // PX4_INFO("Polling for qshell");
+
+		int pret = 0;
+        // if (number_of_cmd) {
+            pret = px4_poll(&fds[0], (sizeof(fds) / sizeof(fds[0])), 1000);
+        // } else {
+        //     pret = -1;
+        // }
 
 		if (pret > 0 && fds[0].revents & POLLIN) {
 
@@ -147,8 +156,12 @@ int QShell::main()
             PX4_INFO("Sending qshell retval with timestamp %llu, current timestamp %llu", retval.timestamp, hrt_absolute_time());
 			_qshell_retval_pub.publish(retval);
 
+            // number_of_cmd--;
+            px4_show_tasks();
+
 		} else if (pret == 0) {
 			// Timing out is fine.
+            // PX4_INFO("Qshell timeout");
 		} else {
 			// Something is wrong.
 			usleep(10000);

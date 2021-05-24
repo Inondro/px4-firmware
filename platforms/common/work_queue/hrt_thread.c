@@ -96,7 +96,7 @@ static void _sighandler(int sig_num);
  ****************************************************************************/
 static void _sighandler(int sig_num)
 {
-	PX4_DEBUG("RECEIVED SIGNAL %d", sig_num);
+	PX4_INFO("RECEIVED SIGNAL %d", sig_num);
 }
 
 /****************************************************************************
@@ -136,7 +136,12 @@ static void hrt_work_process()
 	 */
 
 	/* Default to sleeping for 1 sec */
+#ifdef __PX4_QURT
+	// next  = 1000;
 	next  = 1000000;
+#else
+	next  = 1000000;
+#endif
 
 	hrt_work_lock();
 
@@ -151,12 +156,17 @@ static void hrt_work_process()
 
 		elapsed = hrt_absolute_time() - work->qtime;
 
-		//PX4_INFO("hrt work_process: in usec elapsed=%lu delay=%u work=%p", elapsed, work->delay, work);
+// #ifdef __PX4_QURT
+// 		PX4_INFO("hrt work_process: in usec elapsed=%llu delay=%u work=%p", elapsed, work->delay, work);
+// #else
+// 		PX4_INFO("hrt work_process: in usec elapsed=%lu delay=%u work=%p", elapsed, work->delay, work);
+// #endif
+
 		if (elapsed >= work->delay) {
 			/* Remove the ready-to-execute work from the list */
 
 			(void)dq_rem((struct dq_entry_s *) & (work->dq), &(wqueue->q));
-			//PX4_INFO("Dequeued work=%p", work);
+			// PX4_INFO("Dequeued work=%p", work);
 
 			/* Extract the work description from the entry (in case the work
 			 * instance by the re-used after it has been de-queued).
@@ -198,7 +208,11 @@ static void hrt_work_process()
 			/* Here: elapsed < work->delay */
 			remaining = work->delay - elapsed;
 
-			//PX4_INFO("remaining=%u delay=%u elapsed=%lu", remaining, work->delay, elapsed);
+// #ifdef __PX4_QURT
+// 			PX4_INFO("remaining=%u delay=%u elapsed=%llu", remaining, work->delay, elapsed);
+// #else
+// 			PX4_INFO("remaining=%u delay=%u elapsed=%lu", remaining, work->delay, elapsed);
+// #endif
 			if (remaining < next) {
 				/* Yes.. Then schedule to wake up when the work is ready */
 
@@ -208,7 +222,7 @@ static void hrt_work_process()
 			/* Then try the next in the list. */
 
 			work = (struct work_s *)work->dq.flink;
-			//PX4_INFO("next %u work %p", next, work);
+			// PX4_INFO("next %u work %p", next, work);
 		}
 	}
 
@@ -218,7 +232,10 @@ static void hrt_work_process()
 	hrt_work_unlock();
 
 	/* might sleep less if a signal received and new item was queued */
-	//PX4_INFO("Sleeping for %u usec", next);
+// #ifdef __PX4_QURT
+// 	PX4_INFO("Sleeping for %u usec", next);
+// #endif
+
 	px4_usleep(next);
 }
 
@@ -249,6 +266,8 @@ static void hrt_work_process()
 
 static int work_hrtthread(int argc, char *argv[])
 {
+    PX4_INFO("work_hrtthread starting");
+
 	/* Loop forever */
 
 	for (;;) {
@@ -265,6 +284,8 @@ static int work_hrtthread(int argc, char *argv[])
 
 		hrt_work_process();
 	}
+
+    PX4_INFO("work_hrtthread ending");
 
 	return PX4_OK; /* To keep some compilers happy */
 }
@@ -286,6 +307,7 @@ void hrt_work_queue_init(void)
 					    work_hrtthread,
 					    (char *const *)NULL);
 
+    PX4_INFO("Worker thread pid %d", g_hrt_work.pid);
 
 #ifdef __PX4_QURT
 	signal(SIGALRM, _sighandler);
@@ -293,4 +315,3 @@ void hrt_work_queue_init(void)
 	signal(SIGCONT, _sighandler);
 #endif
 }
-

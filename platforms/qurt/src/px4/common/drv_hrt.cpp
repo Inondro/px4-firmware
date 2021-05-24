@@ -105,7 +105,17 @@ int px4_clock_settime(clockid_t clk_id, struct timespec *tp)
 
 int px4_clock_gettime(clockid_t clk_id, struct timespec *tp)
 {
-	return clock_gettime(clk_id, tp);
+    // struct timespec temp_ts;
+    // int rc = clock_gettime(clk_id, &temp_ts);
+    // if ((rc == 0) && (clk_id == CLOCK_MONOTONIC)) {
+    //     hrt_abstime now_time = ts_to_abstime(&temp_ts);
+    //     hrt_abstime temp_time = now_time + dsp_offset;
+    //     tp->tv_sec = (temp_time / 1000000);
+    //     tp->tv_nsec = (temp_time % 1000000) * 1000;
+    //     // PX4_INFO("%llu %llu %d %d %d", now_time, temp_time, dsp_offset, tp->tv_sec, tp->tv_nsec);
+    // }
+	// return rc;
+    return clock_gettime(clk_id, tp);
 }
 
 /*
@@ -115,6 +125,7 @@ hrt_abstime hrt_absolute_time()
 {
 	struct timespec ts;
 	px4_clock_gettime(CLOCK_MONOTONIC, &ts);
+	// return ts_to_abstime(&ts);
 	return ts_to_abstime(&ts) + dsp_offset;
 }
 
@@ -251,7 +262,8 @@ hrt_call_enter(struct hrt_call *entry)
 
 	if ((call == nullptr) || (entry->deadline < call->deadline)) {
 		sq_addfirst(&entry->link, &callout_queue);
-		//if (call != nullptr) PX4_INFO("call enter at head, reschedule (%lu %lu)", entry->deadline, call->deadline);
+		if (call != nullptr) PX4_INFO("call enter at head, reschedule (%lu %lu)", entry->deadline, call->deadline);
+        // else PX4_INFO("Adding to head of empty queue (%lu)", entry->deadline);
 		/* we changed the next deadline, reschedule the timer event */
 		hrt_call_reschedule();
 
@@ -260,7 +272,7 @@ hrt_call_enter(struct hrt_call *entry)
 			next = (struct hrt_call *)sq_next(&call->link);
 
 			if ((next == nullptr) || (entry->deadline < next->deadline)) {
-				//lldbg("call enter after head\n");
+				PX4_INFO("call enter after head (%lu %lu)", entry->deadline, next->deadline);
 				sq_addafter(&call->link, &entry->link, &callout_queue);
 				break;
 			}
@@ -278,6 +290,8 @@ hrt_tim_isr(void *p)
 {
 	/* grab the timer for latency tracking purposes */
 	latency_actual = hrt_absolute_time();
+
+    // PX4_INFO("hrt_tim_isr at %llu", latency_actual);
 
 	/* do latency calculations */
 	hrt_latency_update();
@@ -346,7 +360,7 @@ hrt_call_reschedule()
 static void
 hrt_call_internal(struct hrt_call *entry, hrt_abstime deadline, hrt_abstime interval, hrt_callout callout, void *arg)
 {
-	PX4_DEBUG("hrt_call_internal deadline=%lu interval = %lu", deadline, interval);
+	// PX4_INFO("hrt_call_internal deadline=%lu interval = %lu", deadline, interval);
 	hrt_lock();
 
 	//PX4_INFO("hrt_call_internal after lock");

@@ -42,6 +42,7 @@ namespace sensors
 using namespace matrix;
 
 static constexpr uint32_t SENSOR_TIMEOUT{300_ms};
+// static constexpr uint32_t SENSOR_TIMEOUT{1200_ms};
 
 VehicleMagnetometer::VehicleMagnetometer() :
 	ModuleParams(nullptr),
@@ -336,7 +337,6 @@ void VehicleMagnetometer::Run()
 
 				if (_calibration[uorb_index].enabled()) {
 					const Vector3f vect = _calibration[uorb_index].Correct(Vector3f{report.x, report.y, report.z});
-
 					float mag_array[3] {vect(0), vect(1), vect(2)};
 					_voter.put(uorb_index, report.timestamp, mag_array, report.error_count, _priority[uorb_index]);
 

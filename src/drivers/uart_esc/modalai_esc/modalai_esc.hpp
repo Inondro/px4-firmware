@@ -117,7 +117,7 @@ private:
 
 	static constexpr uint16_t MODALAI_ESC_PWM_MIN = 0;
 	static constexpr uint16_t MODALAI_ESC_PWM_MAX = 800;
-	static constexpr uint16_t MODALAI_ESC_DEFAULT_RPM_MIN = 5000;
+	static constexpr uint16_t MODALAI_ESC_DEFAULT_RPM_MIN = 1000;
 	static constexpr uint16_t MODALAI_ESC_DEFAULT_RPM_MAX = 17000;
 
 	//static constexpr uint16_t max_pwm(uint16_t pwm) { return math::min(pwm, MODALAI_ESC_PWM_MAX); }
