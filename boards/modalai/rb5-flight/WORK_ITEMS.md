@@ -49,6 +49,7 @@
    * Could just need a better cable
 * Activate temperature compensation in hmc5883 driver?
 * Move to the desired magnetometer, away from 3DR unit
+* Why doesn't my other 3DR unit work? Device ID issue?
 
 ### IMU
 * Debug why the accel lookup is failing (Not important if we move to PX4 driver)
@@ -162,6 +163,7 @@
    * Also idl, fastrpc, shmem, stubs, etc.
 * Clean up the build scripts
 * Move to QRB5165 release 9.1
+* Add timestamp to apps side px4 messages
 * Clean up header file includes in all source files
 * Create a debian package to load everything onto target
 * Figure out how to better control log messages (DEBUG vs. INFO, etc.)

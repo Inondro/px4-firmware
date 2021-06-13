@@ -116,12 +116,14 @@ int QShell::_wait_for_retval()
 	while (hrt_elapsed_time(&time_started_us) < 3000000) {
 		if (_qshell_retval_sub.update(&retval)) {
 			if (retval.return_sequence != _current_sequence) {
-				PX4_WARN("Ignoring return value with wrong sequence");
+				PX4_WARN("Ignoring wrong sequence %u, expected %u",
+                         retval.return_sequence, _current_sequence);
 			} else {
 				if (retval.return_value) {
 					PX4_WARN("cmd returned with: %d", retval.return_value);
 				}
-				PX4_INFO("qshell return value timestamp: %lu, local time: %lu", retval.timestamp, hrt_absolute_time());
+				PX4_INFO("qshell return value timestamp: %lu, local time: %lu, seq %u",
+                         retval.timestamp, hrt_absolute_time(), retval.return_sequence);
 
 				return 0;
 			}

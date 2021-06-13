@@ -324,12 +324,14 @@ CDev::poll_notify(px4_pollevent_t events)
 void
 CDev::poll_notify_one(px4_pollfd_struct_t *fds, px4_pollevent_t events)
 {
-	PX4_DEBUG("CDev::poll_notify_one");
+	// PX4_DEBUG("CDev::poll_notify_one");
+	PX4_INFO("CDev::poll_notify_one");
 
 	/* update the reported event set */
 	fds->revents |= fds->events & events;
 
-	PX4_DEBUG(" Events fds=%p %0x %0x %0x", fds, fds->revents, fds->events, events);
+	// PX4_DEBUG(" Events fds=%p %0x %0x %0x", fds, fds->revents, fds->events, events);
+	PX4_INFO(" Events fds=%p %0x %0x %0x", fds, fds->revents, fds->events, events);
 
 	if (fds->revents != 0) {
 		px4_sem_post(fds->sem);

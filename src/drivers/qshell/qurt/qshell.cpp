@@ -144,7 +144,8 @@ int QShell::main()
 			}
 
 			retval.timestamp = hrt_absolute_time();
-            PX4_INFO("Sending qshell retval with timestamp %llu, current timestamp %llu", retval.timestamp, hrt_absolute_time());
+            PX4_INFO("Sending qshell retval with timestamp %llu, current timestamp %llu, seq %u",
+                     retval.timestamp, hrt_absolute_time(), retval.return_sequence);
 			_qshell_retval_pub.publish(retval);
 
 		} else if (pret == 0) {

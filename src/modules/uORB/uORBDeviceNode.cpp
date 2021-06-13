@@ -505,6 +505,8 @@ int16_t uORB::DeviceNode::process_received_message(int32_t length, uint8_t *data
 		return PX4_ERROR;
 	}
 
+    PX4_INFO("Writing data for topic %s", _meta->o_name);
+
 	/* call the devnode write method with no file pointer */
 	ret = write(nullptr, (const char *)data, _meta->o_size);
 
@@ -516,6 +518,9 @@ int16_t uORB::DeviceNode::process_received_message(int32_t length, uint8_t *data
 		errno = EIO;
 		return PX4_ERROR;
 	}
+
+    PX4_INFO("Write data successful for %s", _meta->o_name);
+    PX4_INFO("%lu callbacks in list", _callbacks.size());
 
 	return PX4_OK;
 }
