@@ -68,15 +68,17 @@ void WorkerThread::startTask(Request request)
 
     instance = this;
 
-    int ret = px4_task_spawn_cmd("CmdWorkerThread",
-                                  SCHED_DEFAULT, SCHED_PRIORITY_DEFAULT,
-                                  3250, threadEntryTrampoline, NULL);
+    threadEntry();
 
-	/* initialize low priority thread */
-	pthread_attr_t low_prio_attr;
-    PX4_INFO("WorkerThread::startTask %p %p", pthread_attr_init, &low_prio_attr);
-	pthread_attr_init(&low_prio_attr);
-	// pthread_attr_setstacksize(&low_prio_attr, PX4_STACK_ADJUSTED(3304));
+    // int ret = px4_task_spawn_cmd("CmdWorkerThread",
+    //                               SCHED_DEFAULT, SCHED_PRIORITY_DEFAULT,
+    //                               3250, threadEntryTrampoline, NULL);
+
+	// /* initialize low priority thread */
+	// pthread_attr_t low_prio_attr;
+    // PX4_INFO("WorkerThread::startTask %p %p", pthread_attr_init, &low_prio_attr);
+	// pthread_attr_init(&low_prio_attr);
+	// // pthread_attr_setstacksize(&low_prio_attr, PX4_STACK_ADJUSTED(3304));
 
 // #ifndef __PX4_QURT
 // 	// This is not supported by QURT (yet).
@@ -89,14 +91,14 @@ void WorkerThread::startTask(Request request)
 // #endif
 	// int ret = pthread_create(&_thread_handle, &low_prio_attr, &threadEntryTrampoline, this);
 	// int ret = pthread_create(&_thread_handle, NULL, &threadEntryTrampoline, this);
-	// int ret = 1;
+	int ret = -1;
 	// pthread_attr_destroy(&low_prio_attr);
 
 	if (ret >= 0) {
 		_state.store((int)State::Running);
         _thread_handle = 1;
 	} else {
-		PX4_ERR("Failed to start thread (%i)", ret);
+		// PX4_ERR("Failed to start thread (%i)", ret);
 		_state.store((int)State::Finished);
 		_ret_value = ret;
         _thread_handle = -1;

@@ -53,7 +53,8 @@ bool uORB::ProtobufChannel::_debug = false;
 //==============================================================================
 int16_t uORB::ProtobufChannel::topic_advertised(const char *messageName)
 {
-	if (_debug) PX4_INFO("Advertising %s on remote side", messageName);
+	PX4_INFO("Advertising %s on remote side", messageName);
+	// if (_debug) PX4_INFO("Advertising %s on remote side", messageName);
 	if (muorb_func_ptrs.advertise_func_ptr) {
         pthread_mutex_lock(&_tx_mutex);
         int16_t rc = muorb_func_ptrs.advertise_func_ptr(messageName);

@@ -171,7 +171,7 @@ orb_advert_t uORB::Manager::orb_advertise_multi(const struct orb_metadata *meta,
 	int result = px4_ioctl(fd, ORBIOCSETQUEUESIZE, (unsigned long)queue_size);
 
 	if (result < 0 && queue_size > 1) {
-		PX4_WARN("orb_advertise_multi: failed to set queue size");
+		PX4_INFO("orb_advertise_multi: failed to set queue size");
 	}
 
 	/* get the advertiser handle and close the node */
@@ -181,7 +181,7 @@ orb_advert_t uORB::Manager::orb_advertise_multi(const struct orb_metadata *meta,
 	px4_close(fd);
 
 	if (result == PX4_ERROR) {
-		PX4_WARN("px4_ioctl ORBIOCGADVERTISER failed. fd = %d", fd);
+		PX4_ERR("px4_ioctl ORBIOCGADVERTISER failed. fd = %d", fd);
 		return nullptr;
 	}
 
@@ -190,6 +190,13 @@ orb_advert_t uORB::Manager::orb_advertise_multi(const struct orb_metadata *meta,
     // wee will generate an advertisement loop.
 	if (_remote_topics.find(meta->o_name) == _remote_topics.end()) {
         uORB::DeviceNode::topic_advertised(meta);
+#ifdef __PX4_QURT
+        if (strcmp("mavlink_log", meta->o_name) == 0) {
+            PX4_INFO("Calling muorb advertise for topic %s", meta->o_name);
+        }
+#endif
+    } else {
+        PX4_INFO("Skipping non-local topic %s", meta->o_name);
     }
 #endif /* ORB_COMMUNICATOR */
 

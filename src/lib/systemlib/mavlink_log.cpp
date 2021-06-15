@@ -71,8 +71,9 @@ __EXPORT void mavlink_vasprintf(int severity, orb_advert_t *mavlink_log_pub, con
 
 	if (*mavlink_log_pub != nullptr) {
 		orb_publish(ORB_ID(mavlink_log), *mavlink_log_pub, &log_msg);
-
+        PX4_INFO("Publishing mavlink_log: %s", (char *)log_msg.text);
 	} else {
 		*mavlink_log_pub = orb_advertise_queue(ORB_ID(mavlink_log), &log_msg, mavlink_log_s::ORB_QUEUE_LENGTH);
+        PX4_INFO("Advertising mavlink_log: %s", (char *)log_msg.text);
 	}
 }

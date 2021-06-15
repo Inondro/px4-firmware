@@ -81,6 +81,8 @@ private:
 				msg.id = _id++;
 				unsigned text_size;
 
+                PX4_INFO("Mavlink status text stream: %s", text);
+
 				while ((text_size = strlen(text)) > 0) {
 					unsigned chunk_size = math::min(text_size, max_chunk_size);
 

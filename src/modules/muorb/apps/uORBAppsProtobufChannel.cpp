@@ -67,7 +67,8 @@ void uORB::AppsProtobufChannel::ReceiveCallback(const char *topic,
 }
 
 void uORB::AppsProtobufChannel::AdvertiseCallback(const char *topic) {
-    if (_Debug) PX4_INFO("Got advertisement callback for topic %s", topic);
+    // if (_Debug) PX4_INFO("Got advertisement callback for topic %s", topic);
+    PX4_INFO("Got advertisement callback for topic %s", topic);
 
     if (_RxHandler) {
         _RxHandler->process_remote_topic(topic);
